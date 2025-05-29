@@ -11,6 +11,7 @@ import logging.handlers
 # Настройка логгера
 logger = logging.getLogger('urlscan_logger')
 logger.setLevel(logging.INFO)
+logger.propagate = False
 
 # Отправка в syslog
 syslog_handler = logging.handlers.SysLogHandler(address='/dev/log')
@@ -21,6 +22,10 @@ logger.addHandler(syslog_handler)
 
 load_dotenv()
 API =  getenv('API')
+if not API:
+    logger.error("API ключ не найден в .env")
+    sys.exit(1)
+
 
 def main(url):
     headers = {'API-Key': f'{API}', 'Content-Type': 'application/json'}
